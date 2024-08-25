@@ -1,0 +1,30 @@
+import requests
+import pandas as pd
+
+def get_covid_stats(region):
+    url = f"https://api.rootnet.in/covid19-in/stats/latest"
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        data = response.json()
+        for country_data in data["data"]["regional"]:
+            if country_data["loc"].lower() == region.lower():
+                return country_data
+        return None
+    else:
+        return None
+
+def main():
+    region = input("Enter the location (country) name: ")
+    covid_stats = get_covid_stats(region)
+
+    if covid_stats:
+        print(f"COVID-19 Statistics for {region}:")
+        print(f"Total Cases: {covid_stats['totalConfirmed']}")
+        print(f"Total Deaths: {covid_stats['deaths']}")
+        print(f"Total Recoveries: {covid_stats['discharged']}")
+    else:
+        print(f"Data not found for {region}. Please check the location name and try again.")
+
+if __name__ == "__main__":
+    main()
